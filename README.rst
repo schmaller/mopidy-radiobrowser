@@ -25,7 +25,7 @@ Installation
 
 Install by running::
 
-    python3 -m pip install Mopidy-RadioBrowser
+    sudo python3 setup.py install
 
 Some radio streams may require additional audio plugins.
 These can be found in the gstreamer plugin packages for your system.
@@ -39,8 +39,10 @@ Before starting Mopidy, you must add configuration for
 Mopidy-RadioBrowser to your Mopidy configuration file::
 
     [radiobrowser]
+    enabled = true
     timeout = 5000
 
+sudo reboot
 
 Project resources
 =================
