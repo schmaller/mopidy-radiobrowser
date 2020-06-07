@@ -1,9 +1,8 @@
 # Mopidy-RadioBrowser
 
-Fork of Ralf's excellent radio browser extention. Mopidy extension for playing music from http://www.radio-browser.info. Listen to the world’s radio with 28,000+ stations of music, sports and news streaming from every continent.
+Fork of Ralf's excellent radio browser extention. I have built this capability into a Moode compatible install here: https://github.com/duracell80/MoodeRadio-Get and will be looking to bring configuration options developed there to Mopidy such as limiting the tag list to a reasonable length.
 
-Acknowledgement and thanks to Nick Steel's `TuneIn plugin <https://github.com/kingosticks/mopidy-tunein>`_ that was based on.
-This product uses RadioBrowser API but is not endorsed, certified or otherwise approved in any way by RadioBrowser.
+Mopidy extension for playing music from http://www.radio-browser.info. Listen to the world’s radio with 28,000+ stations of music, sports and news streaming from every continent. Acknowledgement and thanks to Nick Steel's `TuneIn plugin <https://github.com/kingosticks/mopidy-tunein>`_ that was based on. This product uses RadioBrowser API but is not endorsed, certified or otherwise approved in any way by RadioBrowser.
 
 ## Installation
 
