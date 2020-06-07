@@ -1,6 +1,4 @@
-*******************************
-***** Mopidy-RadioBrowser *****
-*******************************
+Mopidy-RadioBrowser
 
 .. image:: https://img.shields.io/pypi/v/Mopidy-RadioBrowser
     :target: https://pypi.org/project/Mopidy-RadioBrowser/
