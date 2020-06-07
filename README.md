@@ -1,14 +1,13 @@
 # Mopidy-RadioBrowser
 
-Fork of Ralf's excellent radio browser extention. Mopidy extension for playing music from `RadioBrowser <http://www.radiobrowser.info>`_.
-Listen to the world’s radio with 25,000 stations of music, sports and news streaming from every continent.
+Fork of Ralf's excellent radio browser extention. Mopidy extension for playing music from http://www.radio-browser.info. Listen to the world’s radio with 28,000+ stations of music, sports and news streaming from every continent.
 
 Acknowledgement and thanks to Nick Steel's `TuneIn plugin <https://github.com/kingosticks/mopidy-tunein>`_ that was based on.
 This product uses RadioBrowser API but is not endorsed, certified or otherwise approved in any way by RadioBrowser.
 
 ## Installation
 
-Install by running::
+Install by running
 
     sudo python3 setup.py install
 
@@ -18,7 +17,7 @@ See https://mopidy.com/ext/radiobrowser/ for alternative installation methods.
 
 
 ## Configuration
-=============
+
 
 Before starting Mopidy, you must add configuration for
 Mopidy-RadioBrowser to your Mopidy configuration file::
@@ -30,7 +29,6 @@ Mopidy-RadioBrowser to your Mopidy configuration file::
 sudo reboot
 
 ## Project resources
-=================
 
 - `Source code <https://github.com/RalfLangeDresden/mopidy-radiobrowser>`_
 - `Issue tracker <https://github.com/RalfLangeDresden/mopidy-radiobrowser/issues>`_
@@ -38,7 +36,6 @@ sudo reboot
 
 
 Credits
-=======
 
 - Original author: `Ralf Lange <https://github.com/RalfLangeDresden>`__
 - Current maintainer: `Ralf Lange <https://github.com/RalfLangeDresden>`__
