@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class RadioBrowserLibrary(backend.LibraryProvider):
-    root_directory = Ref.directory(uri='radiobrowser:root', name='RadioBrowser')
+    root_directory = Ref.directory(uri='radiobrowser:root', name='Radio')
 
     def __init__(self, backend):
         logger.debug('RadioBrowser: Start backend.RadioBrowserLibrary.__init__')

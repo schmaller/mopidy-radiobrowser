@@ -26,7 +26,8 @@ class Extension(ext.Extension):
         #schema["username"] = config.String()
         #schema["password"] = config.Secret()
         schema['timeout'] = config.Integer(minimum=0)
-
+        schema['name'] = config.String()
+        
         return schema
 
     def setup(self, registry):
