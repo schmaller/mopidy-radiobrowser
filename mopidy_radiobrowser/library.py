@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class RadioBrowserLibrary(backend.LibraryProvider):
-    root_directory = Ref.directory(uri='radiobrowser:root', name='Radio')
+     
+    libname = "Radio"
+    root_directory = Ref.directory(uri='radiobrowser:root', name=libname)
 
     def __init__(self, backend):
         logger.debug('RadioBrowser: Start backend.RadioBrowserLibrary.__init__')
@@ -19,7 +21,9 @@ class RadioBrowserLibrary(backend.LibraryProvider):
 
     def browse(self, uri):
         logger.debug('RadioBrowser: Start backend.RadioBrowserLibrary.browse')
-
+        
+        
+        
         result = []
         variant, identifier = translator.parse_uri(uri)
         logger.debug('RadioBrowser: Browsing %s' % uri)
@@ -62,12 +66,26 @@ class RadioBrowserLibrary(backend.LibraryProvider):
                         result.append(translator.station_to_ref(station))
             else:
                 logger.debug('RadioBrowser: Unknown URI: %s', uri)
+        
+        
+        
+        
         elif variant == "tag" and identifier:
             tag = self.backend.radiobrowser.getTag(identifier)
             stations = self.backend.radiobrowser.stations(tag)
+            encoding = self.backend.radiobrowser._encoding
+            if ", " in encoding:
+                encoding = self.backend.radiobrowser._encoding.split(", ")
+            
             for station in stations:
-                self.backend.radiobrowser.addStation(station)
-                result.append(translator.station_to_ref(station))
+                    
+                # Intercept Tagged Stations - Check For User Defined Encoding
+                if station["codec"].lower() in encoding:
+                    self.backend.radiobrowser.addStation(station)
+                    result.append(translator.station_to_ref(station))
+        
+        
+        
         elif variant == "language" and identifier:
             language = self.backend.radiobrowser.getLanguage(identifier)
             stations = self.backend.radiobrowser.stations(language)
@@ -107,11 +125,14 @@ class RadioBrowserLibrary(backend.LibraryProvider):
         self.backend.radiobrowser.reload()
 
     def lookup(self, uri):
-        logger.debug('RadioBrowser: Start backend.RadioBrowserLibrary.lookup')
-
+        
+        # Check to see if uri is a station example - radiobrowser:station:961aeb3b-0601-11e8-ae97-52543be04c81
+        logger.debug('RadioBrowser: Start backend.RadioBrowserLibrary.lookup: ' + uri)
         variant, identifier = translator.parse_uri(uri)
         if variant != 'station':
             return []
+        
+        
         station = self.backend.radiobrowser.getStation(identifier)
         if not station:
             return []

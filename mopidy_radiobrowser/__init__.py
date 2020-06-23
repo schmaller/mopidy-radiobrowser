@@ -22,11 +22,14 @@ class Extension(ext.Extension):
 
     def get_config_schema(self):
         schema = super().get_config_schema()
-        # TODO: Comment in and edit, or remove entirely
-        #schema["username"] = config.String()
-        #schema["password"] = config.Secret()
+     
         schema['timeout'] = config.Integer(minimum=0)
-        schema['name'] = config.String()
+        schema['encoding'] = config.String(optional=True)
+        schema['whitelist_exact'] = config.Boolean(optional=True)
+        schema['whitelist_tags'] = config.String()
+        schema['whitelist_countries'] = config.String()
+        schema['display_languages'] = config.Boolean(optional=True)
+        schema['display_toprated'] = config.Boolean(optional=True)
         
         return schema
 

@@ -195,7 +195,7 @@ def find_playlist_parser(extension, content_type):
 class RadioBrowser(object):
     # Wrapper for the RadioBrowser API.
 
-    def __init__(self, timeout, session=None):
+    def __init__(self, timeout, encoding, wlexact, wltags, wlstates, dlang, drated, session=None):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.__init__')
         
         hosts = []
@@ -212,9 +212,15 @@ class RadioBrowser(object):
         self._base_uri = 'http://' + hosts[0] + '/json/%s'
         self._session = session or requests.Session()
         self._timeout = timeout / 1000.0
+        self._encoding = encoding
         self._categories = []  # <type 'list'>
         self._directories = {}
         self._stations = {}
+        self._wlexact = wlexact
+        self._wltags = wltags
+        self._wlstates = wlstates
+        self._dlang = dlang
+        self._drated = drated
 
         category = {   # <type 'dict'>
             # Countries
@@ -238,7 +244,8 @@ class RadioBrowser(object):
             'key'    : 'languages',
             'type'   : 'link'
         };
-        self.addCategory(category);
+        if dlang:
+            self.addCategory(category);
 
         category = {
             # Tags
@@ -262,7 +269,8 @@ class RadioBrowser(object):
             'key'    : 'clicks',
             'type'   : 'link'
         };
-        self.addCategory(category);
+        if drated:
+            self.addCategory(category);
 
         category = {
             # Top 50 voted
@@ -274,7 +282,11 @@ class RadioBrowser(object):
             'key'    : 'votes',
             'type'   : 'link'
         };
-        self.addCategory(category);
+        if drated:
+            self.addCategory(category);
+            
+            
+            
 
     def reload(self):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.reload')
@@ -353,9 +365,10 @@ class RadioBrowser(object):
         return results
 
     def addStation(self, station):
-        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addStation')
+        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addStation: Station ID='+ station['stationuuid'] +' Codec is ' + station['codec'])
 
         stationId = station['stationuuid']
+        stationCodec = station['codec']
         if stationId in self._stations:
             # The station always exist
             return True
@@ -365,17 +378,24 @@ class RadioBrowser(object):
         return True
 
     def getStation(self, stationId):
-        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.getStation')
-
+        
+        
         if stationId in self._stations:
             station = self._stations[stationId]
         else:
             station = self._station_info(stationId)
             self._stations['stationId'] = station
+        
+        encoding = station['codec'].lower()
+        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.getStation: ' + station['name'] + '(' + encoding + ')')
+        
         return station
 
+
+           
+
     def addCountry(self, country):
-        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addCountry')
+        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addCountry: ' + country['name'])
 
         if '0' == country['stationcount']:
             return False
@@ -387,9 +407,24 @@ class RadioBrowser(object):
         # country['URL'] = self._base_uri % ('states')
         country['key'] = PREFIX_COUNTRY + country['a2']
 
-        self.addDirectory(country)
+
+        # Condition a whitelist to contain or exact match users configured searchable countries
+        wlstates = self._wlstates.split(', ')
+        wlexact = self._wlexact
+        name = country['name'].lower()
         
-        return True
+        if wlexact:
+            for wlstate in wlstates:
+                if wlstate.lower() == name:    
+                    self.addDirectory(country)
+                    return True
+        else:    
+            for wlstate in wlstates:
+                if wlstate.lower() in name:
+                    self.addDirectory(country)
+                    return True
+    
+    
 
     def getCountry(self, countryId):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.getCountry')
@@ -445,19 +480,36 @@ class RadioBrowser(object):
         return self.getDirectory(PREFIX_LANGUAGE + languageId)
 
     def addTag(self, tag):
-        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addTag')
+        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addTag: ' + tag['name'].strip())
 
         # Add the url to browse the tag
         # http://www.radio-browser.info/webservice/json/stations/bytag/<name>
         # http://www.radio-browser.info/webservice/json/stations/bytagexact/<name>
         name = tag['name'].strip()
-        searchName = name.replace('#', '')
-        tag['URL'] = self._base_uri % ('stations/bytagexact/' + searchName)
-        tag['key'] = PREFIX_TAG + name.replace(' ', '')
-
-        self.addDirectory(tag)
+        wltags = self._wltags.split(', ')
+        wlexact = self._wlexact
         
-        return True
+        # Exact match on tag or return tags with keyword contained within
+        if wlexact:
+            for wltag in wltags:
+                if wltag == name:    
+                    searchName = name.replace('#', '')
+                    tag['URL'] = self._base_uri % ('stations/bytagexact/' + searchName)
+                    tag['key'] = PREFIX_TAG + name.replace(' ', '')
+
+                    self.addDirectory(tag)
+
+                    return True
+        else:    
+            for wltag in wltags:
+                if wltag in name:    
+                    searchName = name.replace('#', '')
+                    tag['URL'] = self._base_uri % ('stations/bytagexact/' + searchName)
+                    tag['key'] = PREFIX_TAG + name.replace(' ', '')
+
+                    self.addDirectory(tag)
+
+                    return True
 
     def getTag(self, tagId):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.getTag')
@@ -630,7 +682,7 @@ class RadioBrowser(object):
 
     # @cache()   # Can't be debugged
     def _radiobrowser(self, url, args):
-        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser._radiobrowser')
+        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser._radiobrowser: ' + url)
 
         uri = url + args
         logger.debug('RadioBrowser: Request: %s', uri)

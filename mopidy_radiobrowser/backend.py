@@ -42,10 +42,27 @@ class RadioBrowserBackend(pykka.ThreadingActor, backend.Backend):
                 mopidy_radiobrowser.__version__))
 
         self._timeout = config['radiobrowser']['timeout']
+        self._encoding = config['radiobrowser']['encoding'].lower()
+        self._wlexact = config['radiobrowser']['whitelist_exact']
+        self._wltags = config['radiobrowser']['whitelist_tags']
+        self._wlstates = config['radiobrowser']['whitelist_countries']
+        self._dlang = config['radiobrowser']['display_languages']
+        self._drated = config['radiobrowser']['display_toprated']
 
+        
         self._scanner = scan.Scanner(
             timeout = config['radiobrowser']['timeout'],
             proxy_config = config['proxy'])
-        self.radiobrowser = RadioBrowser(config['radiobrowser']['timeout'], self._session)
+        
+        
+        self.radiobrowser = RadioBrowser(
+            config['radiobrowser']['timeout'],
+            config['radiobrowser']['encoding'].lower(),
+            config['radiobrowser']['whitelist_exact'], 
+            config['radiobrowser']['whitelist_tags'], 
+            config['radiobrowser']['whitelist_countries'],
+            config['radiobrowser']['display_languages'],
+            config['radiobrowser']['display_toprated'], self._session)
+        
         self.library = RadioBrowserLibrary(self)
         self.playback = RadioBrowserPlayback(audio=audio, backend=self)
