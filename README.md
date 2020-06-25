@@ -25,7 +25,7 @@ Before starting Mopidy, you must add configuration for Mopidy-RadioBrowser to yo
 - NEW: Choose to hide the top rated category in the library
 - TODO: Save a last 50 listened to stations in library
 
-`
+```
 [radiobrowser]
 enabled = true
 timeout = 5000
@@ -35,7 +35,7 @@ whitelist_tags = jazz, ambient, nature
 whitelist_countries = united kingdom, united states, ireland, germany, norway
 display_languages = true
 display_toprated = true
-`
+```
 
 sudo reboot
 
