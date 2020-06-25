@@ -17,13 +17,25 @@ See https://mopidy.com/ext/radiobrowser/ for alternative installation methods.
 
 ## Configuration
 
+Before starting Mopidy, you must add configuration for Mopidy-RadioBrowser to your Mopidy configuration file.
 
-Before starting Mopidy, you must add configuration for
-Mopidy-RadioBrowser to your Mopidy configuration file::
+- NEW: Encoding, choose which codecs you want the API to return
+- NEW: Whitelist tags annd countries to cut down on the amount of scrolling in the library
+- NEW: Choose to hide the lanuguages category in the library
+- NEW: Choose to hide the top rated category in the library
+- TODO: Save a last 50 listened to stations in library
 
-    [radiobrowser]
-    enabled = true
-    timeout = 5000
+`
+[radiobrowser]
+enabled = true
+timeout = 5000
+encoding = aac, flac
+whitelist_exact = true
+whitelist_tags = jazz, ambient, nature
+whitelist_countries = united kingdom, united states, ireland, germany, norway
+display_languages = true
+display_toprated = true
+`
 
 sudo reboot
 
