@@ -64,11 +64,17 @@ def station_to_track(station):
     logger.debug('RadioBrowser: Start translator.station_to_track')
 
     ref = station_to_ref(station)
-    stationArtists = [Artist(name=ref.name, uri=ref.uri)]
-    albumUri = ref.uri
-    stationAlbum = Album(name=ref.name, uri=albumUri, artists=stationArtists)
     stationName = station.get('name', ref.name)
-    track = Track(uri=ref.uri, name=stationName, album=stationAlbum)
+    stationArtist = [Artist(name=ref.name, uri=ref.uri)]
+    details = ref.name
+    codec = station.get('codec', '')
+    if codec:
+        details += ' - ' + codec.lower()
+    bitrate = station.get('bitrate', '')
+    if bitrate:
+        details += ' ' + str(bitrate) + ' kbps'
+    stationAlbum = Album(name=details, uri=ref.uri, artists=stationArtist)
+    track = Track(uri=ref.uri, name=stationName, album=stationAlbum, genre=station.get('tags',''))
     return track
 
 

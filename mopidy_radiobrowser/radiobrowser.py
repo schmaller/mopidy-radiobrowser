@@ -356,6 +356,7 @@ class RadioBrowser(object):
 
         return self._directories
 
+
     def browseDirectory(self, directory):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.browseDirectory')
 
@@ -364,35 +365,30 @@ class RadioBrowser(object):
 
         return results
 
+
     def addStation(self, station):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addStation: Station ID='+ station['stationuuid'] +' Codec is ' + station['codec'])
 
         stationId = station['stationuuid']
-        stationCodec = station['codec']
         if stationId in self._stations:
-            # The station always exist
+            # The station already exist
             return True
         
         self._stations[stationId] = station
-        
+
         return True
 
+
     def getStation(self, stationId):
-        
-        
+        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.getStation: ' + stationId)
         if stationId in self._stations:
             station = self._stations[stationId]
         else:
             station = self._station_info(stationId)
-            self._stations['stationId'] = station
-        
-        encoding = station['codec'].lower()
-        logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.getStation: ' + station['name'] + '(' + encoding + ')')
+            self._stations[stationId] = station
         
         return station
 
-
-           
 
     def addCountry(self, country):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.addCountry: ' + country['name'])
@@ -543,7 +539,8 @@ class RadioBrowser(object):
             station = item
         self._stations[station['guide_id']] = station
         results.append(station)
-
+    '''
+    
     def _filter_results(self, data, section_name=None, map_func=None):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser._filter_results')
 
@@ -558,7 +555,7 @@ class RadioBrowser(object):
             else:
                 self._grab_item(item)
         return results
-
+    '''
     def locations(self, location):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.locations')
 
@@ -620,15 +617,15 @@ class RadioBrowser(object):
                 'subtext': listing.get('slogan', ''),
                 'URL': self._base_uri % url_args}
 
+
     def _station_info(self, stationId):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser._station_info')
 
         logger.debug('RadioBrowser: Fetching info for station %s' % stationId)
         uri = self._base_uri % ('stations/byuuid/' + stationId)
-        results = self._radiobrowser(uri, '')
-        listings = self._filter_results(results, 'Listing', self._map_listing)
-        if listings:
-            return listings[0]
+        result = self._radiobrowser(uri, '')
+        return result[0]
+
 
     def parse_stream_url(self, url):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.parse_stream_url')
@@ -665,6 +662,7 @@ class RadioBrowser(object):
         if not stream_uris:
             logger.error('Failed to tune station id %s' % station['guide_id'])
         return list(OrderedDict.fromkeys(stream_uris))
+
 
     def search(self, query):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.search')
