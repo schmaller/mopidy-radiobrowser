@@ -208,7 +208,6 @@ class RadioBrowser(object):
                 
         hosts.sort()
 
-        # old API: self._base_uri = 'http://www.radio-browser.info/webservice/json/%s'
         self._base_uri = 'http://' + hosts[0] + '/json/%s'
         self._session = session or requests.Session()
         self._timeout = timeout / 1000.0
@@ -624,8 +623,10 @@ class RadioBrowser(object):
         logger.debug('RadioBrowser: Fetching info for station %s' % stationId)
         uri = self._base_uri % ('stations/byuuid/' + stationId)
         result = self._radiobrowser(uri, '')
-        return result[0]
-
+        if len(result) > 0:
+            return result[0]
+        else:
+            raise AssertionError('could not read station info for ' + stationId)
 
     def parse_stream_url(self, url):
         logger.debug('RadioBrowser: Start radiobrowser.RadioBrowser.parse_stream_url')
@@ -658,7 +659,7 @@ class RadioBrowser(object):
 
         logger.debug('RadioBrowser: Tuning station id %s' % station['name'])
         stream_uris = []
-        stream_uris.append(station['url'])
+        stream_uris.append(station['url_resolved'])
         if not stream_uris:
             logger.error('Failed to tune station id %s' % station['guide_id'])
         return list(OrderedDict.fromkeys(stream_uris))
