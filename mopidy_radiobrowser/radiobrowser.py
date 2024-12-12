@@ -665,7 +665,7 @@ class RadioBrowser(object):
         else:                        
             url = self._base_uri % ('url/' + station['stationuuid'])    # count station click
             result = self._radiobrowser(url, '')
-            logger.info('RadioBrowser: counted station "%s"' % station['name']) )
+            logger.info('RadioBrowser: counted station "%s"' % station['name'])
         
         return list(OrderedDict.fromkeys(stream_uris))
 
