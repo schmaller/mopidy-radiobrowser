@@ -662,6 +662,11 @@ class RadioBrowser(object):
         stream_uris.append(station['url_resolved'])
         if not stream_uris:
             logger.error('Failed to tune station id %s' % station['guide_id'])
+        else:                        
+            url = self._base_uri % ('url/' + station['stationuuid'])    # count station click
+            result = self._radiobrowser(url, '')
+            logger.info('RadioBrowser: counted station "%s"' % station['name']) )
+        
         return list(OrderedDict.fromkeys(stream_uris))
 
 
